@@ -180,4 +180,4 @@ let recognizeOperator = (phone, country = 'GLOBAL') => {
     }
     return localOperatorIcons.INCORRECT;
 }
-export default { getCountry, formatPhone, recognizeOperator };
+module.exports = { getCountry, formatPhone, recognizeOperator };
