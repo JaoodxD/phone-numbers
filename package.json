@@ -1,12 +1,12 @@
 {
   "name": "@jaood/phone-numbers",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pre-relise version",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["phone", "number", "formatting", "recognition", "local operators"],
   "author": "JaoodxD",
   "license": "ISC"
 }
