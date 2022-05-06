@@ -3,6 +3,10 @@
   "version": "1.0.7",
   "private":false,
   "description": "Pre-relise version",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JaoodxD/phone-numbers"
+  },
   "type": "module",
   "main": "index.js",
   "scripts": {
