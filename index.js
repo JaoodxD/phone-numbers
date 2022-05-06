@@ -1,6 +1,6 @@
 //@ts-check
 let countryCode = {
-    'UA': { code: "380", maxLen: 12, mask: '+## ### ### ####', codes: ['0', '80', '380'] }, //+38 096 555 55 55
+    'UA': { code: "380", maxLen: 12, mask: '+## ### ### ####', codes: ['0', '80', '380', '38'] }, //+38 096 555 55 55
     'KZ': { code: '7', maxLen: 11, mask: '+# ### ### ####', codes: ['7', '8'] }, //+7 777 001 44 99
     'GLOBAL': { code: '', minLen: 5, maxLen: 13, mask: '+#############', codes: [] }
 };
