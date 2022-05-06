@@ -134,8 +134,9 @@ let formatPhone = (phone, country, prevCountry = undefined) => {
         //strip all non-numeric characters
         phone = phone.replace(/\D/gm, '');
 
-        if (countryCode[prevCountry ?? country].codes.some(x => new RegExp(`^${x}`).test(phone))) {
-            countryCode[prevCountry ?? country].codes.forEach(x => phone = phone.replace(new RegExp(`^${x}`), countryCode[prevCountry ?? country].code));
+        let prefix;
+        if (prefix = countryCode[prevCountry ?? country].codes.find(x => new RegExp(`^${x}`).test(phone))) {
+            phone = phone.replace(new RegExp(`^${prefix}`), countryCode[prevCountry ?? country].code);
         }
         //if nothing was found just add the prefix
         else {
@@ -180,4 +181,4 @@ let recognizeOperator = (phone, country = 'GLOBAL') => {
     }
     return localOperatorIcons.INCORRECT;
 }
-export  { getCountry, formatPhone, recognizeOperator }
+export { getCountry, formatPhone, recognizeOperator }
