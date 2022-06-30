@@ -91,10 +91,12 @@ let normalizeCountryName = country => {
     switch (country) {
         case 'Украина':
         case 'UA':
+        case '🇺🇦':
             country = 'UA';
             break;
         case 'Казахстан':
         case 'KZ':
+        case '🇰🇿':
             country = 'KZ';
             break;
         default:
