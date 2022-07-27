@@ -1,18 +1,28 @@
 {
   "name": "@jaood/phone-numbers",
-  "version": "1.0.8",
-  "private":false,
+  "version": "1.0.13",
+  "private": false,
   "description": "Pre-relise version",
   "repository": {
     "type": "git",
     "url": "https://github.com/JaoodxD/phone-numbers"
   },
   "type": "module",
-  "main": "index.js",
+  "main": "index.cjs",
+  "exports": {
+    "import": "./index.mjs",
+    "require": "./index.cjs"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["phone", "number", "formatting", "recognition", "local operators"],
+  "keywords": [
+    "phone",
+    "number",
+    "formatting",
+    "recognition",
+    "local operators"
+  ],
   "author": "JaoodxD",
   "license": "ISC"
 }

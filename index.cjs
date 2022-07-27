@@ -9,6 +9,7 @@ let countryCode = {
  * @param {String|Number} code  String or numeric representation of country prefix
  * @returns Alpha‑2 code country name if found otherwise 'GLOBAL'  
  */
+// @ts-ignore
 let getCountry = code => Object.entries(countryCode).find(([key, value]) => value.code == code)?.[0] ?? 'GLOBAL';
 let operatorsUA = {
     'Kyivstar': [
@@ -58,15 +59,25 @@ let operatorPrefixes = {
     'KZ': operatorsKZ
 }
 
+// @ts-ignore
 let proxying = map => new Proxy(Object.entries(map).reduce((obj, [key, value]) => ({ ...obj, [value.join('|')]: key }), {}), {
+    // @ts-ignore
     get: (target, property, reciever) => {
         for (let k in target)
             if (new RegExp(k).test(property.toString()))
+                // @ts-ignore
                 return target[k];
         return null;
     }
 })
 let proxy = Object.entries(operatorPrefixes).reduce((obj, [key, value]) => ({ ...obj, [key]: proxying(value) }), {});
+/**
+ * 
+ * @param {String} code 
+ * @param {'UA'|'KZ'|String} country 
+ * @returns 
+ */
+// @ts-ignore
 let recognize = (code, country) => proxy[country][code];
 let localOperatorIcons = {
     'UA': {
@@ -87,6 +98,7 @@ let localOperatorIcons = {
     'EMPTY': ''//'icon-uniE941',
 }
 
+// @ts-ignore
 let normalizeCountryName = country => {
     switch (country) {
         case 'Украина':
@@ -120,7 +132,7 @@ let mask = (phone = '', pattern = '+#############') => {
  * Function of converting mobile number to international format e.g. phone = '0965558844' and country = 'UA' -> +38 096 555 88 44
  * @param {String} phone 
  * @param {'UA'| 'KZ'| 'GLOBAL'} country
- * @param {'UA'| 'KZ'| 'GLOBAL'} prevCountry
+ * @param {'UA'| 'KZ'| 'GLOBAL' | undefined} prevCountry
  * @returns {String} Formatted 
  */
 let formatPhone = (phone, country, prevCountry = undefined) => {
@@ -168,19 +180,26 @@ let recognizeOperator = (phone, country = 'GLOBAL') => {
     //counting phone digits
     let numLen = (phone.match(/\d/g) || []).length;
     if (country == 'GLOBAL') {
+        // @ts-ignore
         if (numLen >= currentCountryCode.minLen && numLen <= currentCountryCode.maxLen)
             return localOperatorIcons.UNKNOWN;
     }
     if (numLen != currentCountryCode.maxLen) {
         return localOperatorIcons.INCORRECT
     }
+    // @ts-ignore
     let { int, operator } = phone.replace('+', '').match(/(?<int>^\d+) (?<operator>\d+)/)?.groups;
     if (!!operator && !!int) {
         operator = recognize(operator, country);
         if (operator)
+            // @ts-ignore
             return localOperatorIcons[country][operator];
         return localOperatorIcons.UNKNOWN;
     }
     return localOperatorIcons.INCORRECT;
 }
-export { getCountry, formatPhone, recognizeOperator }
+module.exports = {
+    getCountry,
+    formatPhone,
+    recognizeOperator
+}
