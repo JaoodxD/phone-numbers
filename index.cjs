@@ -19,7 +19,7 @@ const proxying = (map) => new Proxy(Object.entries(map).reduce((obj, [key, value
                 return target[k];
         return null;
     }
-})
+});
 const proxy = Object.entries(operatorPrefixes).reduce((obj, [key, value]) => ({ ...obj, [key]: proxying(value) }), {});
 /**
  * 
@@ -45,7 +45,7 @@ const localOperatorIcons = {
     'UNKNOWN': 'icon-Union',
     'INCORRECT': 'icon-Union-18',
     'EMPTY': ''//'icon-uniE941',
-}
+};
 
 const normalizeCountryName = (country) => {
     switch (country) {
@@ -64,7 +64,7 @@ const normalizeCountryName = (country) => {
             break;
     }
     return country;
-}
+};
 /**
  * 
  * @param {String} phone number to be masked
@@ -75,7 +75,7 @@ const mask = (phone = '', pattern = '+#############') => {
     let i = 0;
     const v = phone.toString();
     return pattern.replace(/#/g, _ => v[i++] ?? '').trimEnd();
-}
+};
 /**
  * Function of converting mobile number to international format e.g. phone = '0965558844' and country = 'UA' -> +38 096 555 88 44
  * @param {String} phone 
@@ -112,7 +112,7 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
         return phone;
     }
     return '';
-}
+};
 /**
  *  Mobile operator icon recognition function by phone number
  * @param {String} phone 
@@ -146,9 +146,10 @@ const recognizeOperator = (phone, country = 'GLOBAL') => {
         return localOperatorIcons.UNKNOWN;
     }
     return localOperatorIcons.INCORRECT;
-}
+};
+
 module.exports = {
     getCountry,
     formatPhone,
     recognizeOperator
-}
+};
