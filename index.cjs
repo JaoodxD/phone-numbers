@@ -1,9 +1,7 @@
 //@ts-check
-const countryCode = {
-    'UA': { code: "380", maxLen: 12, mask: '+## ### ### ####', codes: ['0', '80', '380', '38'] }, //+38 096 555 55 55
-    'KZ': { code: '7', maxLen: 11, mask: '+# ### ### ####', codes: ['7', '8'] }, //+7 777 001 44 99
-    'GLOBAL': { code: '', minLen: 5, maxLen: 13, mask: '+#############', codes: [] }
-};
+const operatorPrefixes = require('./operator-prefixes.json');
+
+const countryCode = require('./countries-metada.json');
 /**
  * Function to return country name by international code 
  * @param {String|Number} code  String or numeric representation of country prefix
@@ -13,53 +11,6 @@ const getCountry = (code) => Object.entries(countryCode)
     .find(([, value]) =>
         value.code == code)?.[0] ?? 'GLOBAL';
 
-const operatorsUA = {
-    'Kyivstar': [
-        '067',
-        '068',
-        '096',
-        '097',
-        '098',
-    ],
-    'Vodafone': [
-        '050',
-        '066',
-        '095',
-        '099'
-    ],
-    'lifecell': [
-        '063',
-        '073',
-        '093',
-    ]
-}
-const operatorsKZ = {
-    'Activ': [
-        '727',
-        '701',
-        '702',
-        '772',
-        '778',
-    ],
-    'Altel': [
-        '700',
-        '708',
-    ],
-    'Beeline': [
-        '705',
-        '771',
-        '776',
-        '777'
-    ],
-    'Tele2': [
-        '707',
-        '747',
-    ]
-}
-const operatorPrefixes = {
-    'UA': operatorsUA,
-    'KZ': operatorsKZ
-}
 
 const proxying = (map) => new Proxy(Object.entries(map).reduce((obj, [key, value]) => ({ ...obj, [value.join('|')]: key }), {}), {
     get: (target, property) => {
