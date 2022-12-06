@@ -1,5 +1,5 @@
 //@ts-check
-const countryCode = {
+let countryCode = {
     'UA': { code: "380", maxLen: 12, mask: '+## ### ### ####', codes: ['0', '80', '380', '38'] }, //+38 096 555 55 55
     'KZ': { code: '7', maxLen: 11, mask: '+# ### ### ####', codes: ['7', '8'] }, //+7 777 001 44 99
     'GLOBAL': { code: '', minLen: 5, maxLen: 13, mask: '+#############', codes: [] }
@@ -9,11 +9,9 @@ const countryCode = {
  * @param {String|Number} code  String or numeric representation of country prefix
  * @returns Alpha‑2 code country name if found otherwise 'GLOBAL'  
  */
-const getCountry = (code) => Object.entries(countryCode)
-    .find(([, value]) =>
-        value.code == code)?.[0] ?? 'GLOBAL';
-
-const operatorsUA = {
+// @ts-ignore
+let getCountry = code => Object.entries(countryCode).find(([key, value]) => value.code == code)?.[0] ?? 'GLOBAL';
+let operatorsUA = {
     'Kyivstar': [
         '067',
         '068',
@@ -33,7 +31,7 @@ const operatorsUA = {
         '093',
     ]
 }
-const operatorsKZ = {
+let operatorsKZ = {
     'Activ': [
         '727',
         '701',
@@ -56,28 +54,32 @@ const operatorsKZ = {
         '747',
     ]
 }
-const operatorPrefixes = {
+let operatorPrefixes = {
     'UA': operatorsUA,
     'KZ': operatorsKZ
 }
 
-const proxying = (map) => new Proxy(Object.entries(map).reduce((obj, [key, value]) => ({ ...obj, [value.join('|')]: key }), {}), {
-    get: (target, property) => {
+// @ts-ignore
+let proxying = map => new Proxy(Object.entries(map).reduce((obj, [key, value]) => ({ ...obj, [value.join('|')]: key }), {}), {
+    // @ts-ignore
+    get: (target, property, reciever) => {
         for (let k in target)
             if (new RegExp(k).test(property.toString()))
+                // @ts-ignore
                 return target[k];
         return null;
     }
 })
-const proxy = Object.entries(operatorPrefixes).reduce((obj, [key, value]) => ({ ...obj, [key]: proxying(value) }), {});
+let proxy = Object.entries(operatorPrefixes).reduce((obj, [key, value]) => ({ ...obj, [key]: proxying(value) }), {});
 /**
  * 
  * @param {String} code 
  * @param {'UA'|'KZ'|String} country 
  * @returns 
  */
-const recognize = (code, country) => proxy[country][code];
-const localOperatorIcons = {
+// @ts-ignore
+let recognize = (code, country) => proxy[country][code];
+let localOperatorIcons = {
     'UA': {
         'Kyivstar': 'icon-Union-1',
         'Vodafone': 'icon-Vector-1',
@@ -96,7 +98,8 @@ const localOperatorIcons = {
     'EMPTY': ''//'icon-uniE941',
 }
 
-const normalizeCountryName = (country) => {
+// @ts-ignore
+let normalizeCountryName = country => {
     switch (country) {
         case 'Украина':
         case 'UA':
@@ -120,7 +123,7 @@ const normalizeCountryName = (country) => {
  * @param {String} pattern pattern to mask inputted number which contains '#' as placceholder 
  * @returns masked phone number e.g. value=123453, pattern='+### # ##' will gives '+123 4 53'
  */
-const mask = (phone = '', pattern = '+#############') => {
+let mask = (phone = '', pattern = '+#############') => {
     let i = 0;
     const v = phone.toString();
     return pattern.replace(/#/g, _ => v[i++] ?? '').trimEnd();
@@ -132,7 +135,7 @@ const mask = (phone = '', pattern = '+#############') => {
  * @param {'UA'| 'KZ'| 'GLOBAL' | undefined} prevCountry
  * @returns {String} Formatted 
  */
-const formatPhone = (phone, country, prevCountry = undefined) => {
+let formatPhone = (phone, country, prevCountry = undefined) => {
     if (phone) {
 
         country = normalizeCountryName(country);
@@ -168,7 +171,7 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
  * @param {'UA'| 'KZ'| 'GLOBAL'} country 
  * @returns {String} icon name of specific recognized mobile operator
  */
-const recognizeOperator = (phone, country = 'GLOBAL') => {
+let recognizeOperator = (phone, country = 'GLOBAL') => {
     country = normalizeCountryName(country);
     phone = formatPhone(phone, country);
     let currentCountryCode = countryCode[country];
@@ -177,20 +180,19 @@ const recognizeOperator = (phone, country = 'GLOBAL') => {
     //counting phone digits
     let numLen = (phone.match(/\d/g) || []).length;
     if (country == 'GLOBAL') {
+        // @ts-ignore
         if (numLen >= currentCountryCode.minLen && numLen <= currentCountryCode.maxLen)
             return localOperatorIcons.UNKNOWN;
     }
     if (numLen != currentCountryCode.maxLen) {
         return localOperatorIcons.INCORRECT
     }
-    //@ts-ignore
-    let { int, operator } = phone
-        .replace('+', '')
-        .match(/(?<int>^\d+) (?<operator>\d+)/)
-        ?.groups;
+    // @ts-ignore
+    let { int, operator } = phone.replace('+', '').match(/(?<int>^\d+) (?<operator>\d+)/)?.groups;
     if (!!operator && !!int) {
         operator = recognize(operator, country);
         if (operator)
+            // @ts-ignore
             return localOperatorIcons[country][operator];
         return localOperatorIcons.UNKNOWN;
     }
