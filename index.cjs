@@ -12,7 +12,10 @@ const getCountry = (code) => Object.entries(countryCode)
         value.code == code)?.[0] ?? 'GLOBAL';
 
 
-const proxying = (map) => new Proxy(Object.entries(map).reduce((obj, [key, value]) => ({ ...obj, [value.join('|')]: key }), {}), {
+const proxying = (map) => new Proxy(
+    Object.entries(map)
+        .reduce((dic, [key, value]) =>
+            (dic[value.join('|')] = key, dic), {}), {
     get: (target, property) => {
         for (let k in target)
             if (new RegExp(k).test(property.toString()))
@@ -20,7 +23,9 @@ const proxying = (map) => new Proxy(Object.entries(map).reduce((obj, [key, value
         return null;
     }
 });
-const proxy = Object.entries(operatorPrefixes).reduce((obj, [key, value]) => ({ ...obj, [key]: proxying(value) }), {});
+const proxy = Object.entries(operatorPrefixes)
+    .reduce((dic, [key, value]) =>
+        (dic[key] = proxying(value), dic), {});
 /**
  * 
  * @param {String} code 
@@ -97,15 +102,27 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
         phone = phone.replace(/\D/gm, '');
 
         let prefix;
-        if (prefix = countryCode[prevCountry ?? country].codes.find(x => new RegExp(`^${x}`).test(phone))) {
-            phone = phone.replace(new RegExp(`^${prefix}`), countryCode[prevCountry ?? country].code);
+        if (
+            prefix = countryCode[prevCountry ?? country].codes
+                .find(x =>
+                    new RegExp(`^${x}`).test(phone))
+        ) {
+            phone = phone
+                .replace(
+                    new RegExp(`^${prefix}`),
+                    countryCode[prevCountry ?? country].code
+                );
         }
         //if nothing was found just add the prefix
         else {
             phone = `${countryCode[prevCountry ?? country].code}${phone}`;
         }
         if (country != 'GLOBAL' && prevCountry && prevCountry != 'GLOBAL') {
-            phone = phone.replace(new RegExp(`^${countryCode[prevCountry].code}`), countryCode[country].code);
+            phone = phone
+                .replace(
+                    new RegExp(`^${countryCode[prevCountry].code}`),
+                    countryCode[country].code
+                );
         }
         //masking the phone to natural human representation
         phone = mask(phone, countryCode[country].mask);
