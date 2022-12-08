@@ -32,24 +32,29 @@ const proxy = Object.entries(operatorPrefixes)
  * @returns 
  */
 const recognize = (code, country) => proxy[country][code];
-const localOperatorIcons = {
-    'UA': {
-        'Kyivstar': 'icon-Union-1',
-        'Vodafone': 'icon-Vector-1',
-        'lifecell': 'icon-Vector-3'
 
-    },
-    'KZ': {
-        'Activ': 'icons-Activ',
-        'Altel': 'icons-Altel',
-        'Beeline': 'icons-Beeline',
-        'Tele2': 'icons-Tele2'
+/**
+ * @typedef {Object} localOperatorAliases
+ * @prop {Object} [UA]
+ * @prop {any=} UA.Kyivstar
+ * @prop {any=} UA.Vodafone
+ * @prop {any=} UA.Lifecell
+ * 
+ * @prop {Object} [KZ]
+ * @prop {any=} KZ.Activ
+ * @prop {any=} KZ.Altel
+ * @prop {any=} KZ.Beeline
+ * @prop {any=} KZ.Tele2
+ * 
+ * @prop {any} UNKNOWN
+ * @prop {any} INCORRECT
+ * @prop {any} EMPTY
+ */
 
-    },
-    'UNKNOWN': 'icon-Union',
-    'INCORRECT': 'icon-Union-18',
-    'EMPTY': ''//'icon-uniE941',
-};
+/**
+ * @type {localOperatorAliases}
+ */
+let localOperators = require('./local-operator-aliases.json');
 
 const normalizeCountryName = (country) => {
     switch (country) {
@@ -138,17 +143,17 @@ const recognizeOperator = (phone, country = 'GLOBAL') => {
     let currentCountryCode = countryCode[country];
 
     if (phone.replace(/^\+/, '').length == 0)
-        return localOperatorIcons.EMPTY;
-    
+        return localOperators.EMPTY;
+
     //counting phone digits
     const numLen = (phone.match(/\d/g) || []).length;
     if (country == 'GLOBAL') {
         if (numLen >= currentCountryCode.minLen && numLen <= currentCountryCode.maxLen)
-            return localOperatorIcons.UNKNOWN;
+            return localOperators.UNKNOWN;
     }
 
     if (numLen != currentCountryCode.maxLen) {
-        return localOperatorIcons.INCORRECT
+        return localOperators.INCORRECT
     }
     //@ts-ignore can't type annotate regex groups
     let { int, operator } = phone
@@ -158,14 +163,20 @@ const recognizeOperator = (phone, country = 'GLOBAL') => {
     if (!!operator && !!int) {
         operator = recognize(operator, country);
         if (operator)
-            return localOperatorIcons[country][operator];
-        return localOperatorIcons.UNKNOWN;
+            return localOperators[country][operator];
+        return localOperators.UNKNOWN;
     }
-    return localOperatorIcons.INCORRECT;
+    return localOperators.INCORRECT;
 };
+/**
+ * 
+ * @param {localOperatorAliases} localOperatorAliases 
+ * @returns 
+ */
+const config = (localOperatorAliases) =>
+(
+    localOperators = localOperatorAliases,
+    { getCountry, formatPhone, recognizeOperator }
+);
 
-module.exports = {
-    getCountry,
-    formatPhone,
-    recognizeOperator
-};
+module.exports = config;
