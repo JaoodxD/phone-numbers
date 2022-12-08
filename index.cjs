@@ -11,7 +11,6 @@ const getCountry = (code) => Object.entries(countryCode)
     .find(([, value]) =>
         value.code == code)?.[0] ?? 'GLOBAL';
 
-
 const proxying = (map) => new Proxy(
     Object.entries(map)
         .reduce((dic, [key, value]) =>
@@ -100,7 +99,7 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
         let prefix;
         if (
             prefix = countryCode[prevCountry ?? country].codes
-                .find(x =>
+                .find((x) =>
                     new RegExp(`^${x}`).test(phone))
         ) {
             phone = phone
@@ -135,19 +134,23 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
 const recognizeOperator = (phone, country = 'GLOBAL') => {
     country = normalizeCountryName(country);
     phone = formatPhone(phone, country);
+
     let currentCountryCode = countryCode[country];
+
     if (phone.replace(/^\+/, '').length == 0)
         return localOperatorIcons.EMPTY;
+    
     //counting phone digits
-    let numLen = (phone.match(/\d/g) || []).length;
+    const numLen = (phone.match(/\d/g) || []).length;
     if (country == 'GLOBAL') {
         if (numLen >= currentCountryCode.minLen && numLen <= currentCountryCode.maxLen)
             return localOperatorIcons.UNKNOWN;
     }
+
     if (numLen != currentCountryCode.maxLen) {
         return localOperatorIcons.INCORRECT
     }
-    //@ts-ignore
+    //@ts-ignore can't type annotate regex groups
     let { int, operator } = phone
         .replace('+', '')
         .match(/(?<int>^\d+) (?<operator>\d+)/)
