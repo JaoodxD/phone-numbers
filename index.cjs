@@ -57,18 +57,14 @@ const normalizeCountryName = (country) => {
         case 'Украина':
         case 'UA':
         case '🇺🇦':
-            country = 'UA';
-            break;
+            return 'UA';
         case 'Казахстан':
         case 'KZ':
         case '🇰🇿':
-            country = 'KZ';
-            break;
+            return 'KZ';
         default:
-            country = 'GLOBAL';
-            break;
+            return 'GLOBAL';
     }
-    return country;
 };
 /**
  * 
