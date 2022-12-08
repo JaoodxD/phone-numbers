@@ -175,7 +175,7 @@ const recognizeOperator = (phone, country = 'GLOBAL') => {
  */
 const config = (localOperatorAliases) =>
 (
-    localOperators = localOperatorAliases,
+    localOperators = localOperatorAliases ?? localOperators,
     { getCountry, formatPhone, recognizeOperator }
 );
 
