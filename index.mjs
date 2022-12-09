@@ -1,7 +1,7 @@
 //@ts-check
-const operatorPrefixes = await import('./operator-prefixes.json', { assert: { type: 'json' } });
+import operatorPrefixes from './operator-prefixes.json';
 
-const countryCode = await import('./countries-metada.json', { assert: { type: 'json' } });
+import countryCode from './countries-metada.json';
 /**
  * Function to return country name by international code 
  * @param {String|Number} code  String or numeric representation of country prefix
@@ -51,11 +51,14 @@ const recognize = (code, country) => proxy[country][code];
  * @prop {any} EMPTY
  */
 
-
 /**
  * @type {localOperatorAliases}
  */
-let localOperators = await import('./local-operator-aliases.json', { assert: { type: 'json' } });
+import localOperatorsDefaultConfig from './local-operator-aliases.json';
+/**
+ * @type {localOperatorAliases}
+ */
+let localOperators = localOperatorsDefaultConfig;
 
 const normalizeCountryName = (country) => {
     switch (country) {
