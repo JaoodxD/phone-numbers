@@ -1,7 +1,7 @@
 //@ts-check
 import operatorPrefixes from './operator-prefixes.json';
 
-import countryCode from './countries-metada.json';
+import countryCode from './countries-metadata.json';
 /**
  * Function to return country name by international code 
  * @param {String|Number} code  String or numeric representation of country prefix

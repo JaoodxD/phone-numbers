@@ -1,7 +1,7 @@
 //@ts-check
 const operatorPrefixes = require('./operator-prefixes.json');
 
-const countryCode = require('./countries-metada.json');
+const countryCode = require('./countries-metadata.json');
 /**
  * Function to return country name by international code 
  * @param {String|Number} code  String or numeric representation of country prefix
