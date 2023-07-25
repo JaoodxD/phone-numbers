@@ -1,37 +1,5 @@
 //@ts-check
-const operatorPrefixes = require('./operator-prefixes.json');
-
-const countryCode = require('./countries-metadata.json');
-/**
- * Function to return country name by international code 
- * @param {String|Number} code  String or numeric representation of country prefix
- * @returns Alpha‑2 code country name if found otherwise 'GLOBAL'  
- */
-const getCountry = (code) => Object.entries(countryCode)
-    .find(([, value]) =>
-        value.code == code)?.[0] ?? 'GLOBAL';
-
-const proxying = (map) => new Proxy(
-    Object.entries(map)
-        .reduce((dic, [key, value]) =>
-            (dic[value.join('|')] = key, dic), {}), {
-    get: (target, property) => {
-        for (let k in target)
-            if (new RegExp(k).test(property.toString()))
-                return target[k];
-        return null;
-    }
-});
-const proxy = Object.entries(operatorPrefixes)
-    .reduce((dic, [key, value]) =>
-        (dic[key] = proxying(value), dic), {});
-/**
- * 
- * @param {String} code 
- * @param {'UA'|'KZ'|String} country 
- * @returns 
- */
-const recognize = (code, country) => proxy[country][code];
+const defaultOperatorPrefixes = require('./operator-prefixes.json');
 
 /**
  * @typedef {Object} localOperatorAliases
@@ -54,7 +22,30 @@ const recognize = (code, country) => proxy[country][code];
 /**
  * @type {localOperatorAliases}
  */
-let localOperators = require('./local-operator-aliases.json');
+const defaultLocalOperators = require('./local-operator-aliases.json');
+
+
+const countryCode = require('./countries-metadata.json');
+/**
+ * Function to return country name by international code 
+ * @param {String|Number} code  String or numeric representation of country prefix
+ * @returns Alpha‑2 code country name if found otherwise 'GLOBAL'  
+ */
+const getCountry = (code) => Object.entries(countryCode)
+    .find(([, value]) =>
+        value.code == code)?.[0] ?? 'GLOBAL';
+
+const proxying = (map) => new Proxy(
+    Object.entries(map)
+        .reduce((dic, [key, value]) =>
+            (dic[value.join('|')] = key, dic), {}), {
+    get: (target, property) => {
+        for (let k in target)
+            if (new RegExp(k).test(property.toString()))
+                return target[k];
+        return null;
+    }
+});
 
 const normalizeCountryName = (country) => {
     switch (country) {
@@ -130,53 +121,66 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
     }
     return '';
 };
-/**
- *  Mobile operator icon recognition function by phone number
- * @param {String} phone 
- * @param {'UA'| 'KZ'| 'GLOBAL'} country 
- * @returns {String} icon name of specific recognized mobile operator
- */
-const recognizeOperator = (phone, country = 'GLOBAL') => {
-    country = normalizeCountryName(country);
-    phone = formatPhone(phone, country);
 
-    let currentCountryCode = countryCode[country];
-
-    if (phone.replace(/^\+/, '').length == 0)
-        return localOperators.EMPTY;
-
-    //counting phone digits
-    const numLen = (phone.match(/\d/g) || []).length;
-    if (country == 'GLOBAL') {
-        if (numLen >= currentCountryCode.minLen && numLen <= currentCountryCode.maxLen)
-            return localOperators.UNKNOWN;
-    }
-
-    if (numLen != currentCountryCode.maxLen) {
-        return localOperators.INCORRECT
-    }
-    //@ts-ignore can't type annotate regex groups
-    let { int, operator } = phone
-        .replace('+', '')
-        .match(/(?<int>^\d+) (?<operator>\d+)/)
-        ?.groups;
-    if (!!operator && !!int) {
-        operator = recognize(operator, country);
-        if (operator)
-            return localOperators[country][operator];
-        return localOperators.UNKNOWN;
-    }
-    return localOperators.INCORRECT;
-};
 /**
  * 
  * @param {localOperatorAliases} localOperatorAliases 
  * @returns 
  */
 const config = (localOperatorAliases) => {
-    localOperators = localOperatorAliases ?? localOperators;
-    return { getCountry, formatPhone, recognizeOperator };
+    const localOperators = localOperatorAliases ?? defaultLocalOperators;
+    const operatorPrefixes = defaultOperatorPrefixes;
+    const proxy = Object.entries(operatorPrefixes)
+        .reduce((dic, [key, value]) =>
+            (dic[key] = proxying(value), dic), {});
+    /**
+     * 
+     * @param {String} code 
+     * @param {'UA'|'KZ'|String} country 
+     * @returns 
+     */
+    const recognize = (code, country) => proxy[country][code];
 
+    /**
+     *  Mobile operator icon recognition function by phone number
+     * @param {String} phone 
+     * @param {'UA'| 'KZ'| 'GLOBAL'} country 
+     * @returns {String} icon name of specific recognized mobile operator
+     */
+    const recognizeOperator = (phone, country = 'GLOBAL') => {
+        country = normalizeCountryName(country);
+        phone = formatPhone(phone, country);
+
+        let currentCountryCode = countryCode[country];
+
+        if (phone.replace(/^\+/, '').length == 0)
+            return localOperators.EMPTY;
+
+        //counting phone digits
+        const numLen = (phone.match(/\d/g) || []).length;
+        if (country == 'GLOBAL') {
+            if (numLen >= currentCountryCode.minLen && numLen <= currentCountryCode.maxLen)
+                return localOperators.UNKNOWN;
+        }
+
+        if (numLen != currentCountryCode.maxLen) {
+            return localOperators.INCORRECT
+        }
+        //@ts-ignore can't type annotate regex groups
+        let { int, operator } = phone
+            .replace('+', '')
+            .match(/(?<int>^\d+) (?<operator>\d+)/)
+            ?.groups;
+        if (!!operator && !!int) {
+            operator = recognize(operator, country);
+            if (operator)
+                return localOperators[country][operator];
+            return localOperators.UNKNOWN;
+        }
+        return localOperators.INCORRECT;
+    };
+
+    return { getCountry, formatPhone, recognizeOperator };
 };
 
 module.exports = config;
