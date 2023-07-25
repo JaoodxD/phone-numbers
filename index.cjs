@@ -173,10 +173,10 @@ const recognizeOperator = (phone, country = 'GLOBAL') => {
  * @param {localOperatorAliases} localOperatorAliases 
  * @returns 
  */
-const config = (localOperatorAliases) =>
-(
-    localOperators = localOperatorAliases ?? localOperators,
-    { getCountry, formatPhone, recognizeOperator }
-);
+const config = (localOperatorAliases) => {
+    localOperators = localOperatorAliases ?? localOperators;
+    return { getCountry, formatPhone, recognizeOperator };
+
+};
 
 module.exports = config;
