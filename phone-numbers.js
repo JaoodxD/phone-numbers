@@ -184,3 +184,4 @@ const config = (localOperatorAliases) => {
 };
 
 module.exports = config;
+module.exports.default = config;
