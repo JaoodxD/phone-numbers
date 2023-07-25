@@ -7,10 +7,9 @@
     "type": "git",
     "url": "https://github.com/JaoodxD/phone-numbers"
   },
-  "type": "module",
   "main": "phone-numbers.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test phone-numbers.test.js"
   },
   "keywords": [
     "phone",
