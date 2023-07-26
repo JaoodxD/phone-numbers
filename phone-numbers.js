@@ -46,7 +46,7 @@ const getCountry = (code) => Object.entries(countryCode)
  * @param {'UA'| 'KZ'| 'GLOBAL' | undefined} prevCountry
  * @returns {String} Formatted 
  */
-const formatPhone = (phone, country, prevCountry = undefined) => {
+function formatPhone(phone, country, prevCountry = undefined) {
     if (phone) {
 
         country = normalizeCountryName(country);
@@ -94,7 +94,7 @@ const formatPhone = (phone, country, prevCountry = undefined) => {
  * @param {localOperatorAliases} localOperatorAliases 
  * @returns 
  */
-const config = (localOperatorAliases) => {
+function config(localOperatorAliases) {
     const localOperators = localOperatorAliases ?? defaultLocalOperators;
     const operatorPrefixes = defaultOperatorPrefixes;
     const proxy = Object.entries(operatorPrefixes)
