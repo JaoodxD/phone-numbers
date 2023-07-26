@@ -1,7 +1,6 @@
-type Prefix = string
 type Operator = {
   name: string
-  prefixes: Prefix[]
+  prefixes: string[]
 }
 type Country = {
   ISO: string
