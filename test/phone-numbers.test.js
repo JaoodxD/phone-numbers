@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
-const config = require('.');
+const config = require('..');
 
 test('simple lib configuring', async (t) => {
   assert.doesNotThrow(config);
