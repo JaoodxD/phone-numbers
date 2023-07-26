@@ -23,7 +23,9 @@ function config (options) {
     const phoneWitoutCountryCode = phone.startsWith(countryCode) ? phone.slice(countryCode.length) : phone
     for (const operator of operators) {
       const { prefixes, name } = operator
-      for (const prefix of prefixes) { if (phoneWitoutCountryCode.startsWith(prefix)) return name }
+      for (const prefix of prefixes) {
+        if (phoneWitoutCountryCode.startsWith(prefix)) return name
+      }
     }
     return 'unknown'
   }
