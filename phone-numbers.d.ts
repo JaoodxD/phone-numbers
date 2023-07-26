@@ -21,3 +21,4 @@ type ConfiguredUtils = {
 
 export declare function config(option: Country[]): ConfiguredUtils
 export default config
+export = config
