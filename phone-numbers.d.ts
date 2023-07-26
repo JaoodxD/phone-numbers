@@ -1,7 +1,7 @@
-type prefix = string
+type Prefix = string
 type Operator = {
   name: string
-  prefixes: prefix[]
+  prefixes: Prefix[]
 }
 type Country = {
   ISO: string
@@ -10,14 +10,14 @@ type Country = {
   operators?: Operator[]
 }
 
-declare function formatPhone(number: string, country: Country['ISO'], leadPlus?:Boolean): string
-declare function recognizeOperator(number: string, country: Country['ISO']): string
-declare function getCountry(number: string): string
+type FormatPhone = (number: string, country: Country['ISO'], leadPlus?:Boolean) => string
+type RecognizeOperator = (number: string, country: Country['ISO']) => string
+type GetCountry = (number: string) => string
 
 type ConfiguredUtils = {
-  formatPhone: typeof formatPhone
-  recognizeOperator: typeof recognizeOperator
-  getCountry: typeof getCountry
+  formatPhone: FormatPhone
+  recognizeOperator: RecognizeOperator
+  getCountry: GetCountry
 }
 
 export declare function config(option: Country[]): ConfiguredUtils
