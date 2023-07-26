@@ -19,6 +19,10 @@
     "recognition",
     "local operators"
   ],
-  "author": "JaoodxD",
+  "homepage": "https://github.com/JaoodxD/phone-numbers#readme",
+  "bugs": {
+    "url": "https://github.com/JaoodxD/phone-numbers/issues"
+  },
+  "author": "Maksym Shenderuk <jaood96@gmail.com>",
   "license": "MIT"
 }
