@@ -21,11 +21,11 @@ function config (options) {
     const { operators, countryCode } = countryInfo
     if (!operators) throw new Error(`No operators specified for ${country} country`)
     const phone = trimStart(number, '+')
-    const phoneWitoutCountryCode = trimStart(phone, countryCode)
+    const phoneWithoutCountryCode = trimStart(phone, countryCode)
     for (const operator of operators) {
       const { prefixes, name } = operator
       for (const prefix of prefixes) {
-        if (phoneWitoutCountryCode.startsWith(prefix)) return name
+        if (phoneWithoutCountryCode.startsWith(prefix)) return name
       }
     }
     return 'unknown'
