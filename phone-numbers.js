@@ -1,4 +1,3 @@
-//@ts-check
 const mask = require('./lib/mask.js');
 
 function config(options) {
