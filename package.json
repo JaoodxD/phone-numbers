@@ -8,6 +8,7 @@
     "url": "https://github.com/JaoodxD/phone-numbers"
   },
   "main": "phone-numbers.js",
+  "types": "phone-numbers.d.ts",
   "scripts": {
     "test": "node --test"
   },
