@@ -10,9 +10,9 @@ type Country = {
   operators?: Operator[]
 }
 
-function formatPhone(number: string, country: Country['ISO'], leadPlus?:Boolean): string
-function recognizeOperator(number: string, country: Country['ISO']): string
-function getCountry(number: string): string
+declare function formatPhone(number: string, country: Country['ISO'], leadPlus?:Boolean): string
+declare function recognizeOperator(number: string, country: Country['ISO']): string
+declare function getCountry(number: string): string
 
 type ConfiguredUtils = {
   formatPhone: typeof formatPhone
