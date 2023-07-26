@@ -9,7 +9,7 @@
   },
   "main": "phone-numbers.js",
   "scripts": {
-    "test": "node --test phone-numbers.test.js"
+    "test": "node --test test/phone-numbers.test.js"
   },
   "keywords": [
     "phone",
