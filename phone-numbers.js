@@ -1,4 +1,8 @@
 //@ts-check
+const proxying = require('./lib/proxying.js');
+const normalizeCountryName = require('./lib/normalizeCountryName.js');
+const mask = require('./lib/mask.js');
+
 const defaultOperatorPrefixes = require('./operator-prefixes.json');
 
 /**
@@ -35,43 +39,6 @@ const getCountry = (code) => Object.entries(countryCode)
     .find(([, value]) =>
         value.code == code)?.[0] ?? 'GLOBAL';
 
-const proxying = (map) => new Proxy(
-    Object.entries(map)
-        .reduce((dic, [key, value]) =>
-            (dic[value.join('|')] = key, dic), {}), {
-    get: (target, property) => {
-        for (let k in target)
-            if (new RegExp(k).test(property.toString()))
-                return target[k];
-        return null;
-    }
-});
-
-const normalizeCountryName = (country) => {
-    switch (country) {
-        case 'Украина':
-        case 'UA':
-        case '🇺🇦':
-            return 'UA';
-        case 'Казахстан':
-        case 'KZ':
-        case '🇰🇿':
-            return 'KZ';
-        default:
-            return 'GLOBAL';
-    }
-};
-/**
- * 
- * @param {String} phone number to be masked
- * @param {String} pattern pattern to mask inputted number which contains '#' as placceholder 
- * @returns masked phone number e.g. value=123453, pattern='+### # ##' will gives '+123 4 53'
- */
-const mask = (phone = '', pattern = '+#############') => {
-    let i = 0;
-    const v = phone.toString();
-    return pattern.replace(/#/g, _ => v[i++] ?? '').trimEnd();
-};
 /**
  * Function of converting mobile number to international format e.g. phone = '0965558844' and country = 'UA' -> +38 096 555 88 44
  * @param {String} phone 
