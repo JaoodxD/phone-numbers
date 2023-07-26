@@ -1,4 +1,5 @@
 const mask = require('./lib/mask.js')
+const trimStart = require('./lib/trim.js')
 
 function config (options) {
   const countries = new Map()
@@ -10,7 +11,7 @@ function config (options) {
     const countryInfo = countries.get(country)
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
     const phoneMask = countryInfo.mask
-    const phone = number.startsWith('+') ? number.slice(1) : number
+    const phone = trimStart(number, '+')
     const prefix = leadPlus ? '+' : ''
     return prefix + mask(phone, phoneMask)
   }
@@ -19,8 +20,8 @@ function config (options) {
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
     const { operators, countryCode } = countryInfo
     if (!operators) throw new Error(`No operators specified for ${country} country`)
-    const phone = number.startsWith('+') ? number.slice(1) : number
-    const phoneWitoutCountryCode = phone.startsWith(countryCode) ? phone.slice(countryCode.length) : phone
+    const phone = trimStart(number, '+')
+    const phoneWitoutCountryCode = trimStart(phone, countryCode)
     for (const operator of operators) {
       const { prefixes, name } = operator
       for (const prefix of prefixes) {
