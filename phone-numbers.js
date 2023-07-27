@@ -1,5 +1,5 @@
 const mask = require('./lib/mask.js')
-const trimStart = require('./lib/trim.js')
+const trimStart = require('./lib/trimStart.js')
 
 function config (options) {
   const countries = new Map()
