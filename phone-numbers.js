@@ -8,14 +8,17 @@ function config (options) {
     const { ISO } = country
     countries.set(ISO, country)
   }
-  function formatPhone (number, country, leadPlus = true) {
+  function formatPhone (number, country, prevCountry, leadPlus = true) {
     const countryInfo = countries.get(country)
+    const prevCountryInfo = countries.get(prevCountry)
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
+    if (prevCountry && !prevCountryInfo) throw new Error(`Unknown previous country: ${country}`)
     const phoneMask = countryInfo.mask
     const countryCode = countryInfo.countryCode
     const phone = stripNumber(number)
+    const codeToTrim = prevCountryInfo ? prevCountryInfo.countryCode : countryCode
     if (phone.length < countryCode.length) return number
-    const trimmedPhone = trimStart(phone, countryCode)
+    const trimmedPhone = trimStart(phone, codeToTrim)
     const phoneWithCountryCode = countryCode + trimmedPhone
     const prefix = leadPlus ? '+' : ''
     return prefix + mask(phoneWithCountryCode, phoneMask)
