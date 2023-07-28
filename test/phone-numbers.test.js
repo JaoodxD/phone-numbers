@@ -124,3 +124,22 @@ test('multi country format', async (t) => {
     assert.equal(result, expected)
   }
 })
+
+test('format with country switch', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['96'], name: 'Kyivstar' }]
+  }, {
+    ISO: 'KZ',
+    countryCode: '7',
+    mask: '# ### ### ####',
+    operators: [{ prefixes: ['705', '771', '776', '777'], name: 'Beeline' }]
+  }]
+  const { formatPhone } = config(countries)
+  const input = '+7 777 345 6789'
+  const result = formatPhone(input, 'UA', 'KZ')
+  const expected = '+38 077 734 5678'
+  assert.equal(result, expected)
+})
