@@ -14,6 +14,7 @@ function config (options) {
     const phoneMask = countryInfo.mask
     const countryCode = countryInfo.countryCode
     const phone = stripNumber(number)
+    if (phone.length <= countryCode.length) return number
     const trimmedPhone = trimStart(phone, countryCode)
     const phoneWithCountryCode = countryCode + trimmedPhone
     const prefix = leadPlus ? '+' : ''
