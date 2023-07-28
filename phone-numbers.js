@@ -1,5 +1,6 @@
 const mask = require('./lib/mask.js')
 const trimStart = require('./lib/trimStart.js')
+const stripNumber = require('./lib/stripNumber.js')
 
 function config (options) {
   const countries = new Map()
@@ -11,16 +12,19 @@ function config (options) {
     const countryInfo = countries.get(country)
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
     const phoneMask = countryInfo.mask
-    const phone = trimStart(number, '+')
+    const countryCode = countryInfo.countryCode
+    const phone = stripNumber(number)
+    const trimmedPhone = trimStart(phone, countryCode)
+    const phoneWithCountryCode = countryCode + trimmedPhone
     const prefix = leadPlus ? '+' : ''
-    return prefix + mask(phone, phoneMask)
+    return prefix + mask(phoneWithCountryCode, phoneMask)
   }
   function recognizeOperator (number, country) {
     const countryInfo = countries.get(country)
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
     const { operators, countryCode } = countryInfo
     if (!operators) throw new Error(`No operators specified for ${country} country`)
-    const phone = trimStart(number, '+')
+    const phone = stripNumber(number)
     const phoneWithoutCountryCode = trimStart(phone, countryCode)
     for (const operator of operators) {
       const { prefixes, name } = operator
