@@ -87,3 +87,40 @@ test('format on input', async (t) => {
     assert.equal(result, expected)
   }
 })
+
+test('auto prepend country code when ommited', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['96'], name: 'Kyivstar' }]
+  }]
+  const { formatPhone } = config(countries)
+  const input = '123'
+  const result = formatPhone(input, 'UA')
+  const expected = '+38 012 3'
+  assert.equal(result, expected)
+})
+
+test('multi country format', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['96'], name: 'Kyivstar' }]
+  }, {
+    ISO: 'KZ',
+    countryCode: '7',
+    mask: '# ### ### ####',
+    operators: [{ prefixes: ['705', '771', '776', '777'], name: 'Beeline' }]
+  }]
+  const { formatPhone } = config(countries)
+  const table = [
+    [['+380965556677', 'UA'], '+38 096 555 6677'],
+    [['77773456789', 'KZ'], '+7 777 345 6789']
+  ]
+  for (const [[input, country], expected] of table) {
+    const result = formatPhone(input, country)
+    assert.equal(result, expected)
+  }
+})
