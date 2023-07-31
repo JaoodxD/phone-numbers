@@ -9,7 +9,7 @@ type Country = {
   operators?: Operator[]
 }
 
-type FormatPhone = (number: string, country: Country['ISO'], prevCountry?: Country['ISO'], leadPlus?:Boolean) => string
+type FormatPhone = (number: string, country: Country['ISO'], prevCountry: Country['ISO'], leadPlus?:Boolean) => string
 type RecognizeOperator = (number: string, country: Country['ISO']) => string
 type GetCountry = (number: string) => string
 
