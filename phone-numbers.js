@@ -26,9 +26,11 @@ function config (options) {
   function recognizeOperator (number, country) {
     const countryInfo = countries.get(country)
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
-    const { operators, countryCode } = countryInfo
+    const { operators, countryCode, mask } = countryInfo
     if (!operators) throw new Error(`No operators specified for ${country} country`)
     const phone = stripNumber(number)
+    const numberLength = mask.match(/#/g).length
+    if (phone.length !== numberLength) return 'incorrect'
     const phoneWithoutCountryCode = trimStart(phone, countryCode)
     for (const operator of operators) {
       const { prefixes, name } = operator
