@@ -143,3 +143,17 @@ test('format with country switch', async (t) => {
   const expected = '+38 077 734 5678'
   assert.equal(result, expected)
 })
+
+test('should recognize phone as incorrect if it has insufficient amount of digits', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['96'], name: 'Kyivstar' }]
+  }]
+  const { recognizeOperator } = config(countries)
+  const input = '+38 096 555 667'
+  const result = recognizeOperator(input, 'UA')
+  const expected = 'incorrect'
+  assert.equal(result, expected)
+})
