@@ -9,6 +9,11 @@ type Country = {
   operators?: Operator[]
 }
 
+type FallbackValues = {
+  incorrect?: string
+  unknown?: string
+}
+
 type FormatPhone = (number: string, country: Country['ISO'], prevCountry?: Country['ISO'], leadPlus?:Boolean) => string
 type RecognizeOperator = (number: string, country: Country['ISO']) => string
 type GetCountry = (number: string) => string
@@ -19,6 +24,6 @@ type ConfiguredUtils = {
   getCountry: GetCountry
 }
 
-export declare function config(option: Country[]): ConfiguredUtils
+export declare function config(option: Country[], fallbackValues?: FallbackValues): ConfiguredUtils
 export default config
 export = config

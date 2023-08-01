@@ -157,3 +157,38 @@ test('should recognize phone as incorrect if it has insufficient amount of digit
   const expected = 'incorrect'
   assert.equal(result, expected)
 })
+
+test('should return custom incorrect fallback value', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['96'], name: 'Kyivstar' }]
+  }]
+  const fallbackValues = {
+    incorrect: 'custom incorrect value'
+  }
+  const { recognizeOperator } = config(countries, fallbackValues)
+  const input = '+38 096 555 667'
+  const result = recognizeOperator(input, 'UA')
+  const expected = fallbackValues.incorrect
+  assert.equal(result, expected)
+})
+
+test('should return custom unknown fallback value', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['96'], name: 'Kyivstar' }]
+  }]
+  const fallbackValues = {
+    incorrect: 'custom incorrect value',
+    unknown: 'custom unknown value'
+  }
+  const { recognizeOperator } = config(countries, fallbackValues)
+  const input = '+38 033 555 6677'
+  const result = recognizeOperator(input, 'UA')
+  const expected = fallbackValues.unknown
+  assert.equal(result, expected)
+})
