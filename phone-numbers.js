@@ -2,12 +2,19 @@ const mask = require('./lib/mask.js')
 const trimStart = require('./lib/trimStart.js')
 const stripNumber = require('./lib/stripNumber.js')
 
-function config (options) {
+const DEFAULT_FALLBACK_OPERATORS = {
+  UNKNOWN: 'unknown',
+  INCORRECT: 'incorrect'
+}
+
+function config (options, fallbackOperators = {}) {
   const countries = new Map()
   for (const country of options) {
     const { ISO } = country
     countries.set(ISO, country)
   }
+  const UNKNOWN = fallbackOperators.unknown || DEFAULT_FALLBACK_OPERATORS.UNKNOWN
+  const INCORRECT = fallbackOperators.incorrect || DEFAULT_FALLBACK_OPERATORS.INCORRECT
   function formatPhone (number, country, prevCountry, leadPlus = true) {
     const countryInfo = countries.get(country)
     const prevCountryInfo = countries.get(prevCountry)
@@ -30,7 +37,7 @@ function config (options) {
     if (!operators) throw new Error(`No operators specified for ${country} country`)
     const phone = stripNumber(number)
     const numberLength = mask.match(/#/g).length
-    if (phone.length !== numberLength) return 'incorrect'
+    if (phone.length !== numberLength) return INCORRECT
     const phoneWithoutCountryCode = trimStart(phone, countryCode)
     for (const operator of operators) {
       const { prefixes, name } = operator
@@ -38,7 +45,7 @@ function config (options) {
         if (phoneWithoutCountryCode.startsWith(prefix)) return name
       }
     }
-    return 'unknown'
+    return UNKNOWN
   }
   function getCountry (number) {
     throw new Error('Not yet implemented')
