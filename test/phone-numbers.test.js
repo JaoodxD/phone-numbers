@@ -192,3 +192,20 @@ test('should return custom unknown fallback value', async (t) => {
   const expected = fallbackValues.unknown
   assert.equal(result, expected)
 })
+
+test('should correctly switch format between countries back and forth', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####'
+  }, {
+    ISO: 'VN',
+    countryCode: '84',
+    mask: '## ## ### ####'
+  }]
+  const { formatPhone } = config(countries)
+  const input = formatPhone('+38 096 555 6677', 'UA')
+  const temp = formatPhone(input, 'VN', 'UA')
+  const result = formatPhone(temp, 'UA', 'VN')
+  assert.equal(result, input)
+})
