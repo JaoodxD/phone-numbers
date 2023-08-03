@@ -209,3 +209,17 @@ test('should correctly switch format between countries back and forth', async (t
   const result = formatPhone(temp, 'UA', 'VN')
   assert.equal(result, input)
 })
+
+test('no country code should be treated as 0 length', async (t) => {
+  const countries = [{
+    ISO: 'GBL',
+    mask: '###############'
+  }]
+  const { formatPhone } = config(countries)
+  const input = '+38 096 555 6677'
+
+  assert.doesNotThrow(() => formatPhone(input, 'GBL'))
+  const result = formatPhone(input, 'GBL')
+  const expected = '+380965556677'
+  assert.equal(result, expected)
+})

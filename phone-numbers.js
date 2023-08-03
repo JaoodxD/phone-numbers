@@ -24,9 +24,11 @@ function config (options, fallbackOperators = {}) {
     const countryCode = countryInfo.countryCode
     const phone = stripNumber(number)
     const codeToTrim = prevCountryInfo ? prevCountryInfo.countryCode : countryCode
-    if (phone.length < countryCode.length) return number
+    const codeLength = countryCode?.length ?? 0
+    if (phone.length < codeLength) return number
     const trimmedPhone = trimStart(phone, codeToTrim)
-    const phoneWithCountryCode = countryCode + trimmedPhone
+    const code = countryCode ?? codeToTrim ?? ''
+    const phoneWithCountryCode = code + trimmedPhone
     const prefix = leadPlus ? '+' : ''
     return prefix + mask(phoneWithCountryCode, phoneMask)
   }
