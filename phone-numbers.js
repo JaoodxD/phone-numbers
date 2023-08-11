@@ -38,8 +38,10 @@ function config (options, fallbackOperators = {}) {
     const { operators, countryCode, mask } = countryInfo
     if (!operators) throw new Error(`No operators specified for ${country} country`)
     const phone = stripNumber(number)
-    const numberLength = mask.match(/#/g).length
-    if (phone.length !== numberLength) return INCORRECT
+    if (mask) {
+      const numberLength = mask.match(/#/g).length
+      if (phone.length !== numberLength) return INCORRECT
+    }
     const phoneWithoutCountryCode = trimStart(phone, countryCode)
     for (const operator of operators) {
       const { prefixes, name } = operator
