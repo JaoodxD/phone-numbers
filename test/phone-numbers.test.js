@@ -248,3 +248,15 @@ test('should recognize operator as unknown when no operators provided', async (t
   const expected = 'unknown'
   assert.equal(result, expected)
 })
+
+test('no plus sign duplication', async (t) => {
+  const countries = [{
+    ISO: 'EU'
+  }]
+  const { formatPhone } = config(countries)
+  const input = '+38 096 555 6677'
+
+  const result = formatPhone(input, 'EU')
+  const expected = '+380965556677'
+  assert.equal(result, expected)
+})
