@@ -223,3 +223,16 @@ test('no country code should be treated as 0 length', async (t) => {
   const expected = '+380965556677'
   assert.equal(result, expected)
 })
+
+test('no country mask should skip length check', async (t) => {
+  const countries = [{
+    ISO: 'EU',
+    operators: []
+  }]
+  const { recognizeOperator } = config(countries)
+  const input = '+38 096 555 6677'
+
+  const result = recognizeOperator(input, 'EU')
+  const expected = 'unknown'
+  assert.equal(result, expected)
+})

@@ -5,7 +5,7 @@ type Operator = {
 type Country = {
   ISO: string
   countryCode?: string
-  mask: string
+  mask?: string
   operators?: Operator[]
 }
 
