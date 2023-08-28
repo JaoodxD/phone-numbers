@@ -52,7 +52,24 @@ function config (options, fallbackOperators = {}) {
     return UNKNOWN
   }
   function getCountry (number) {
-    throw new Error('Not yet implemented')
+    const stripped = stripNumber(number)
+    for (const [ISO, country] of countries) {
+      const { countryCode } = country
+      if (stripped.startsWith(countryCode)) return ISO
+    }
+    for (const [ISO, country] of countries) {
+      const { operators } = country
+      if (!operators) continue
+      for (const operator of operators) {
+        const { prefixes } = operator
+        if (!prefixes) continue
+        for (const prefix of prefixes) {
+          if (stripped.startsWith(prefix)) return ISO
+        }
+      }
+    }
+
+    throw new Error('country not recognized')
   };
   return { formatPhone, recognizeOperator, getCountry }
 }
