@@ -260,3 +260,78 @@ test('no plus sign duplication', async (t) => {
   const expected = '+380965556677'
   assert.equal(result, expected)
 })
+
+test('recognize country by countryCode', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '380',
+    mask: '## ### ### ####'
+  }, {
+    ISO: 'VN',
+    countryCode: '84',
+    mask: '## ## ### ####'
+  }]
+  const { getCountry } = config(countries)
+  {
+    const input = '+38 096 555 6677'
+
+    const result = getCountry(input)
+    const expected = 'UA'
+    assert.equal(result, expected)
+  }
+  {
+    const input = '+84 096 555 6677'
+
+    const result = getCountry(input)
+    const expected = 'VN'
+    assert.equal(result, expected)
+  }
+})
+
+test('recognize country by operator', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '38',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['096'], name: 'Kyivstar' }]
+  }, {
+    ISO: 'VN',
+    countryCode: '84',
+    mask: '## ## ### ####',
+    operators: [{ prefixes: ['0163'], name: 'Viettel' }]
+  }]
+  const { getCountry } = config(countries)
+  {
+    const input = '096 555 6677'
+
+    const result = getCountry(input)
+    const expected = 'UA'
+    assert.equal(result, expected)
+  }
+  {
+    const input = '016 355 6677'
+
+    const result = getCountry(input)
+    const expected = 'VN'
+    assert.equal(result, expected)
+  }
+})
+
+test('throw error if country is not recognized', async (t) => {
+  const countries = [{
+    ISO: 'UA',
+    countryCode: '38',
+    mask: '## ### ### ####',
+    operators: [{ prefixes: ['096'], name: 'Kyivstar' }]
+  }, {
+    ISO: 'VN',
+    countryCode: '84',
+    mask: '## ## ### ####',
+    operators: [{ prefixes: ['0163'], name: 'Viettel' }]
+  }]
+  const { getCountry } = config(countries)
+
+  const input = '023 555 6677'
+
+  assert.throws(() => getCountry(input))
+})
