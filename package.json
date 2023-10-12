@@ -1,6 +1,6 @@
 {
   "name": "@jaood/phone-numbers",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": false,
   "description": "JS module to process phone numbers i.e. formatting, recognizing countries and operators and so on",
   "repository": {
