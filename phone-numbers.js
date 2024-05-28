@@ -36,7 +36,7 @@ function config (options, fallbackOperators = {}) {
     const countryInfo = countries.get(country)
     if (!countryInfo) throw new Error(`Unknown country: ${country}`)
     const { operators, countryCode, mask } = countryInfo
-    if (!operators || !operators.length) return UNKNOWN
+    if (!operators?.length) return UNKNOWN
     const phone = stripNumber(number)
     if (mask) {
       const numberLength = mask.match(/#/g).length
